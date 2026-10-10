@@ -2,15 +2,23 @@ name: Update 威力彩 + 大樂透 results
 
 on:
   schedule:
-    - cron: "23 */2 * * *"
+    # Tirages 20:30 heure de Taïwan (12:30 UTC), résultats publiés vers 21:00-21:30 :
+    # passages ciblés 21:05 → 23:35 Taïwan, puis un passage toutes les 6 h en filet de sécurité
+    - cron: "5,35 13-15 * * *"
+    - cron: "23 */6 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: results
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Fetch results (official Taiwan Lottery API)
